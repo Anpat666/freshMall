@@ -31,7 +31,7 @@ func (repo *UserRepository) List(req *query.ListQuery) (users []model.User, err 
 	if req.Where != "" {
 		db = db.Where(req.Where)
 	}
-	if err := db.Order("id desc").Limit(limit).Offset(offset).Find(&users).Error; err != nil {
+	if err := db.Order("id desc").Limit(int(limit)).Offset(int(offset)).Find(&users).Error; err != nil {
 		return nil, err
 	}
 	return users, nil
@@ -84,7 +84,9 @@ func (repo *UserRepository) Add(user model.User) (*model.User, error) {
 
 func (repo *UserRepository) Edit(user model.User) (bool, error) {
 	err := repo.DB.Model(&user).Where("user_id=?", user.UserId).Updates(map[string]interface{}{
-		"nick_name": user.NickName, "mobile": user.Mobile, "address": user.Address,
+		"nick_name": user.NickName,
+		"mobile":    user.Mobile,
+		"address":   user.Address,
 	}).Error
 	if err != nil {
 		return false, err
